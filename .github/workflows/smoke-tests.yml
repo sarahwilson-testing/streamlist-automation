@@ -1,0 +1,36 @@
+name: StreamList Smoke Tests
+
+on:
+  push:
+    branches:
+      - main
+
+  schedule:
+    - cron: "0 5 * * *"
+
+  workflow_dispatch:
+
+jobs:
+  login-smoke-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Install Chrome
+        uses: browser-actions/setup-chrome@v1
+
+      - name: Run Login Automation Test
+        env:
+          STREAMLIST_EMAIL: ${{ secrets.STREAMLIST_EMAIL }}
+          STREAMLIST_PASSWORD: ${{ secrets.STREAMLIST_PASSWORD }}
+        run: node tests/login-functionality.test.js
